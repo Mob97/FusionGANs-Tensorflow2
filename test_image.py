@@ -33,7 +33,7 @@ tf.autograph.set_verbosity(0)
 
 def prepare_data2(dataset):
     data_dir = os.path.join(os.sep, (os.path.join(os.getcwd(), dataset)))
-    data = glob.glob(os.path.join(data_dir, "*.jpg"))
+    data = glob.glob(os.path.join(data_dir, "*.tif"))
     data.extend(glob.glob(os.path.join(data_dir, "*.bmp")))
     data.sort(key=lambda x:int(x[len(data_dir)+1:-4]))
     return data
@@ -56,36 +56,42 @@ def input_setup2(index):
     sub_vi_sequence.append(input_vi)
     train_data_ir= np.asarray(sub_ir_sequence)
     train_data_vi= np.asarray(sub_vi_sequence)
-    return train_data_ir,train_data_vi, _ir, _vi
+    return train_data_ir,train_data_vi
+
+def imread(path):
+    img = cv2.imread(path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    return img[:, :, 0]
 
 def imsave(image, path):
     return scipy.misc.imsave(path, image)
 
+g = Generator()
+g.load_weights('./weights/generator/my_checkpoint9')
+
+
 data_ir=prepare_data2('Test_ir')
 data_vi=prepare_data2('Test_vi')
 
-for c in range(30):
-    ssim_ = []
-    g = Generator()
-    g.load_weights('./save-eps5/generator/my_checkpoint%d'%c)
-    # image_path = os.path.join(os.getcwd(), 'result','test3')
-    #if not os.path.exists(image_path):
-    #    os.makedirs(image_path)
-    for i in range(len(data_ir)):
-        # start=time.time()
-        train_data_ir, train_data_vi, _ir, _vi=input_setup2(i)
-        g_input = np.concatenate([train_data_ir, train_data_vi], axis=-1) 
-    #     print(g_input)
-    #     g_input = tf.concat([train_data_ir, train_data_vi], axis=-1) 
-    #     print(g_input)
-        result = g(g_input)
-        result=result*127.5+127.5
-        result = result.numpy().squeeze().astype(np.uint8)     
-        ssim_.append(ssim(_ir, _vi, result))
-        # save_path = os.path.join(image_path, str(i+1)+".bmp")
-        # end=time.time()
-    print(c, np.mean(ssim_))
-    #     print(result[0][:,:,0])
-    #     break
-        # imsave(result[0][:,:,0], save_path)
-        # print("Testing [%d] success,Testing time is [%f]"%(i,end-start))
+g = Generator()
+g.load_weights('./weights/generator/my_checkpoint9')
+image_path = os.path.join(os.getcwd(), 'result','test2')
+if not os.path.exists(image_path):
+    os.makedirs(image_path)
+for i in range(len(data_ir)):
+    start=time.time()
+    train_data_ir,train_data_vi=input_setup2(i)
+    g_input = np.concatenate([train_data_ir, train_data_vi], axis=-1) 
+#     print(g_input)
+#     g_input = tf.concat([train_data_ir, train_data_vi], axis=-1) 
+#     print(g_input)
+    result = g(g_input)
+#     result=result*127.5+127.5
+#     result = result.squeeze()        
+    save_path = os.path.join(image_path, str(i+1)+".bmp")
+    end=time.time()
+    
+#     print(result[0][:,:,0])
+#     break
+    imsave(result[0][:,:,0], save_path)
+    print("Testing [%d] success,Testing time is [%f]"%(i,end-start))

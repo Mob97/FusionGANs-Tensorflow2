@@ -1,4 +1,4 @@
-from skimage.metrics import structural_similarity
+from skimage.measure import compare_ssim
 import numpy as np
 from skimage.measure import shannon_entropy
 
@@ -19,8 +19,8 @@ def cal_ssim(x, y):
 
 
 def ssim(ir, vi, fused):
-    ssim_af = structural_similarity(ir, fused)
-    ssim_bf = structural_similarity(vi, fused)
+    ssim_af = cal_ssim(ir, fused)
+    ssim_bf = cal_ssim(vi, fused)
     return ssim_af + ssim_bf
 
 def entropy(img):
