@@ -37,4 +37,8 @@ def correlaton_coefficients(ir, vi, fused):
 def spatialFrequency(I):
     RF = np.sqrt(np.mean(np.square(I[:, 1:] - I[:, :-1])))
     CF = np.sqrt(np.mean(np.square(I[1:, :] - I[:-1, :])))
+<<<<<<< HEAD
     return np.sqrt(RF + CF)
+=======
+    return np.sqrt(RF**2 + CF**2)
+>>>>>>> af69680e9f2bb9ab50f2062bd05d5280de767774

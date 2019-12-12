@@ -12,9 +12,9 @@ image_size = 132
 label_size = 120
 batch_size = 32
 stride = 14
-eps = 5.0
+eps = 8.0
 lda = 100.0
-epoch = 10
+epoch = 30
 lr = 1e-4
 
 
@@ -53,20 +53,20 @@ def training_step(generator, discriminator, d_op, g_op, images_ir, images_vi, la
     return d_loss, g_loss
 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
-# gpus = tf.config.experimental.list_physical_devices('GPU')
-# if gpus:
-#   # Restrict TensorFlow to only allocate 5GB of memory on the first GPU
-#     try:
-#         tf.config.experimental.set_virtual_device_configuration(
-#             gpus[0],
-#             [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=6000)])
-#         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-#         print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-#     except RuntimeError as e:
-#     # Virtual devices must be set before GPUs have been initialized
-#         print(e)
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+  # Restrict TensorFlow to only allocate 5GB of memory on the first GPU
+    try:
+        tf.config.experimental.set_virtual_device_configuration(
+            gpus[0],
+            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+    # Virtual devices must be set before GPUs have been initialized
+        print(e)
 
 
 train_data_ir, train_label_ir = get_images(ir_images_dir, image_size, label_size, stride)

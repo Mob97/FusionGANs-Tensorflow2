@@ -19,7 +19,7 @@ if gpus:
   try:
     tf.config.experimental.set_virtual_device_configuration(
         gpus[0],
-        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=2000)])
     logical_gpus = tf.config.experimental.list_logical_devices('GPU')
     print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
   except RuntimeError as e:
@@ -63,12 +63,23 @@ def imread(path):
 def imsave(image, path):
     return scipy.misc.imsave(path, image)
 
+<<<<<<< HEAD
 data_ir=prepare_data2('C:/Users/quang/Desktop/test_ir')
 data_vi=prepare_data2('C:/Users/quang/Desktop/test_vi')
 
 g = Generator()
 g.load_weights('./weights/generator/my_checkpoint9')
 
+=======
+data_ir=prepare_data2('Test_ir')
+data_vi=prepare_data2('Test_vi')
+
+g = Generator()
+g.load_weights('./weights/generator/my_checkpoint9')
+image_path = os.path.join(os.getcwd(), 'result','test2')
+if not os.path.exists(image_path):
+    os.makedirs(image_path)
+>>>>>>> af69680e9f2bb9ab50f2062bd05d5280de767774
 for i in range(len(data_ir)):
     start=time.time()
     train_data_ir,train_data_vi=input_setup2(i)
@@ -78,17 +89,11 @@ for i in range(len(data_ir)):
 #     print(g_input)
     result = g(g_input)
 #     result=result*127.5+127.5
-#     result = result.squeeze()
-    image_path = os.path.join(os.getcwd(), 'result','_epoch'+str(9))
-    if not os.path.exists(image_path):
-        os.makedirs(image_path)
-    if i<=9:
-        image_path = os.path.join(image_path,'F9_0'+str(i)+".bmp")
-    else:
-        image_path = os.path.join(image_path,'F9_'+str(i)+".bmp")
+#     result = result.squeeze()        
+    save_path = os.path.join(image_path, str(i+1)+".bmp")
     end=time.time()
     
 #     print(result[0][:,:,0])
 #     break
-    imsave(result[0][:,:,0], image_path)
+    imsave(result[0][:,:,0], save_path)
     print("Testing [%d] success,Testing time is [%f]"%(i,end-start))
