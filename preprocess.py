@@ -1,8 +1,8 @@
 
 import numpy as np
 import os
-from PIL import Image
-import scipy.misc
+# from PIL import Image
+# import scipy.misc
 import glob
 import cv2
 

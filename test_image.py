@@ -31,7 +31,7 @@ print(tf.__version__)
 
 def prepare_data2(dataset):
     data_dir = os.path.join(os.sep, (os.path.join(os.getcwd(), dataset)))
-    data = glob.glob(os.path.join(data_dir, "*.jpg"))
+    data = glob.glob(os.path.join(data_dir, "*.tif"))
     data.extend(glob.glob(os.path.join(data_dir, "*.bmp")))
     data.sort(key=lambda x:int(x[len(data_dir)+1:-4]))
     return data
@@ -56,16 +56,18 @@ def input_setup2(index):
     return train_data_ir,train_data_vi
 
 def imread(path):
-    return scipy.misc.imread(path, flatten=True, mode='YCbCr').astype(np.float)
+    img = cv2.imread(path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    return img[:, :, 0]
 
 def imsave(image, path):
     return scipy.misc.imsave(path, image)
 
-data_ir=prepare_data2('Train_ir')
-data_vi=prepare_data2('Train_vi')
+data_ir=prepare_data2('C:/Users/quang/Desktop/test_ir')
+data_vi=prepare_data2('C:/Users/quang/Desktop/test_vi')
 
 g = Generator()
-g.load_weights('./weights1/generator/my_checkpoint9')
+g.load_weights('./weights/generator/my_checkpoint9')
 
 for i in range(len(data_ir)):
     start=time.time()
