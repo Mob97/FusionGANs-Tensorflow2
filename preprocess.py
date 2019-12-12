@@ -1,8 +1,8 @@
 
 import numpy as np
 import os
-from PIL import Image
-import scipy.misc
+# from PIL import Image
+#import scipy.misc
 import glob
 import cv2
 
@@ -22,7 +22,6 @@ def get_images(data_dir, image_size, label_size, stride):
                 sub_label_sequence.append(sub_label)
     sub_input_sequence = np.asarray(sub_input_sequence, dtype=np.float32) 
     sub_label_sequence = np.asarray(sub_label_sequence, dtype=np.float32)
-    print(sub_label_sequence.shape)
     return sub_input_sequence, sub_label_sequence
 
 def prepare_data(data_path):
@@ -42,6 +41,7 @@ def prepare_data(data_path):
 def imread(path):
     img = cv2.imread(path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     return img[:, :, 0]
 
 def imsave(image, path):

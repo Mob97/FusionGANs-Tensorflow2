@@ -19,6 +19,6 @@ def correlaton_coefficients(ir, vi, fused):
     return (rx[0,1]+ry[0,1])/2
 
 def spatialFrequency(I):
-    RF = np.sqrt(np.sum(np.square(I[:, 1:] - I[:, :-1])))
-    CF = np.sqrt(np.sum(np.square(I[1:, :] - I[:-1, :])))
+    RF = np.sqrt(np.mean(np.square(I[:, 1:] - I[:, :-1])))
+    CF = np.sqrt(np.mean(np.square(I[1:, :] - I[:-1, :])))
     return np.sqrt(RF**2 + CF**2)
