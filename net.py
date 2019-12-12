@@ -34,7 +34,7 @@ class SpectralNormalization(tf.keras.layers.Wrapper):
 
         super(SpectralNormalization, self).build()
 
-    @tf.function
+    @tf.function(experimental_relax_shapes=True)
     def call(self, inputs):
         """Call `Layer`"""
         # Recompute weights for each forward pass
@@ -108,7 +108,7 @@ class Generator(tf.keras.Model):
         self.bn_4 = tf.keras.layers.BatchNormalization(momentum=0.9, epsilon=1e-5)
         
         
-    @tf.function
+    @tf.function(experimental_relax_shapes=True)
     def call(self, input_tensor, training=False):
         x = self.conv2d_1(input_tensor)
         x = self.bn_1(x, training=training)
