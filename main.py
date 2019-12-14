@@ -12,9 +12,9 @@ image_size = 132
 label_size = 120
 batch_size = 32
 stride = 14
-eps = 8.0
+eps = 10.0
 lda = 100.0
-epoch = 30
+epoch = 10
 lr = 1e-4
 
 
@@ -53,7 +53,7 @@ def training_step(generator, discriminator, d_op, g_op, images_ir, images_vi, la
     return d_loss, g_loss
 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
@@ -100,4 +100,4 @@ for i in range(previos + 1, previos + 1 + epoch):
             print("Epoch: [%2d], step: [%2d], time: [%4.4f], loss_d: [%.8f],loss_g:[%.8f]" \
             % ((i), counter, time.time()-start_time, d_loss, g_loss))        
     generator.save_weights('./save-eps5/generator/my_checkpoint{}'.format(i))
-    discriminator.save_weights('./save-eps5/discriminator/my_checkpoint{}'.format(i))
+    discriminator.save_weights('./save-eps10/discriminator/my_checkpoint{}'.format(i))

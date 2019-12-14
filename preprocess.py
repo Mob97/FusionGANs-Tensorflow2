@@ -2,11 +2,7 @@
 import numpy as np
 import os
 # from PIL import Image
-<<<<<<< HEAD
 # import scipy.misc
-=======
-#import scipy.misc
->>>>>>> af69680e9f2bb9ab50f2062bd05d5280de767774
 import glob
 import cv2
 

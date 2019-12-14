@@ -96,7 +96,7 @@ while(cap1.isOpened() and cap2.isOpened()):
         break
     f1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2YCrCb)
     f2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2YCrCb)
-    ir, vi = preprocessing(frame1, frame2)
+    ir, vi = preprocessing(f1, f2)
     g_input = np.concatenate([ir, vi], axis=-1) 
     result = generator(g_input)
     result = result*127.5 + 127.5

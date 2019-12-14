@@ -21,7 +21,7 @@ def cal_ssim(x, y):
 def ssim(ir, vi, fused):
     ssim_af = cal_ssim(ir, fused)
     ssim_bf = cal_ssim(vi, fused)
-    return ssim_af + ssim_bf
+    return (ssim_af + ssim_bf)/2
 
 def entropy(img):
     return shannon_entropy(img)
