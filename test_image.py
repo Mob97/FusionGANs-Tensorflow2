@@ -12,21 +12,21 @@ from preprocess import imread
 import cv2
 from metrics import *
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 tf.autograph.set_verbosity(0)
 
-# gpus = tf.config.experimental.list_physical_devices('GPU')
-# if gpus:
-#   # Restrict TensorFlow to only allocate 5GB of memory on the first GPU
-#   try:
-#     tf.config.experimental.set_virtual_device_configuration(
-#         gpus[0],
-#         [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
-#     logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-#     print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-#   except RuntimeError as e:
-#     # Virtual devices must be set before GPUs have been initialized
-#     print(e)
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+  # Restrict TensorFlow to only allocate 5GB of memory on the first GPU
+  try:
+    tf.config.experimental.set_virtual_device_configuration(
+        gpus[0],
+        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Virtual devices must be set before GPUs have been initialized
+    print(e)
 
 # print(tf.__version__)
 
@@ -74,8 +74,8 @@ data_ir=prepare_data2('Test_ir')
 data_vi=prepare_data2('Test_vi')
 
 g = Generator()
-g.load_weights('./weights/generator/my_checkpoint9')
-image_path = os.path.join(os.getcwd(), 'result','test2')
+g.load_weights('./save-eps8/generator/my_checkpoint9')
+image_path = os.path.join(os.getcwd(), 'result','test6')
 if not os.path.exists(image_path):
     os.makedirs(image_path)
 for i in range(len(data_ir)):
@@ -86,12 +86,15 @@ for i in range(len(data_ir)):
 #     g_input = tf.concat([train_data_ir, train_data_vi], axis=-1) 
 #     print(g_input)
     result = g(g_input)
-#     result=result*127.5+127.5
+    result=result*127.5+127.5
+    #result = np.squeeze(result.numpy()).astype(np.uint8)
+    #clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    result = clahe.apply(result)
 #     result = result.squeeze()        
     save_path = os.path.join(image_path, str(i+1)+".bmp")
     end=time.time()
     
 #     print(result[0][:,:,0])
 #     break
-    imsave(result[0][:,:,0], save_path)
+    imsave(result, save_path)
     print("Testing [%d] success,Testing time is [%f]"%(i,end-start))

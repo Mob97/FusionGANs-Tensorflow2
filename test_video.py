@@ -5,45 +5,25 @@ import numpy as np
 from net import Generator
 import time
 from preprocess import imsave
-# def prepare_data2(dataset):
-#     data_dir = os.path.join(os.sep, (os.path.join(os.getcwd(), dataset)))
-#     data = glob.glob(os.path.join(data_dir, "*.jpg"))
-#     data.extend(glob.glob(os.path.join(data_dir, "*.bmp")))
-#     data.sort(key=lambda x:int(x[len(data_dir)+1:-4]))
-#     return data
 
-# def input_setup2(index):
-#     padding=6
-#     sub_ir_sequence = []
-#     sub_vi_sequence = []
-#     print(data_ir[index])
-#     input_ir=(imread(data_ir[index])-127.5)/127.5
-#     input_ir=np.pad(input_ir,((padding,padding),(padding,padding)),'edge')
-#     w,h=input_ir.shape
-#     input_ir=input_ir.reshape([w,h,1])
-#     input_vi=(imread(data_vi[index])-127.5)/127.5
-#     input_vi=np.pad(input_vi,((padding,padding),(padding,padding)),'edge')
-#     w,h=input_vi.shape
-#     input_vi=input_vi.reshape([w,h,1])
-#     sub_ir_sequence.append(input_ir)
-#     sub_vi_sequence.append(input_vi)
-#     train_data_ir= np.asarray(sub_ir_sequence)
-#     train_data_vi= np.asarray(sub_vi_sequence)
-#     return train_data_ir,train_data_vi
+
+
 
 def preprocessing(ir_img, vi_img):
     padding=6    
     
     # ir_img = cv2.cvtColor(ir_img, cv2.COLOR_BGR2YCrCb)
-    ir_img = ir_img[:, :, 0]
-    ir_img = (ir_img - 127.5)/127.5
+    #ir_img = ir_img[:, :, 0]
+    #ir_img = (ir_img - 127.5)/127.5
     ir_img = np.pad(ir_img,((padding,padding),(padding,padding)),'edge')[None, ..., None]
 
     # vi_img = cv2.cvtColor(vi_img, cv2.COLOR_BGR2YCrCb)
-    vi_img = vi_img[:, :, 0]
-    vi_img = (vi_img - 127.5)/127.5    
+    #vi_img = vi_img[:, :, 0]
+    #vi_img = (vi_img - 127.5)/127.5    
     vi_img = np.pad(vi_img,((padding,padding),(padding,padding)),'edge')[None, ..., None]
     return ir_img, vi_img
+
+
 # pir = '/home/minhbq/Downloads/INO_MainEntrance/INO_MainEntrance/INO_MainEntrance_T.avi'
 # pvi = '/home/minhbq/Downloads/INO_MainEntrance/INO_MainEntrance/INO_MainEntrance_RGB.avi'
 
@@ -84,7 +64,7 @@ if gpus:
 
 print(tf.__version__)
 generator = Generator()
-generator.load_weights('./weights/generator/my_checkpoint9')
+generator.load_weights('./save-ihs/generator/my_checkpoint9')
 i = 0
 while(cap1.isOpened() and cap2.isOpened()):
     # for _ in range(10):
@@ -94,8 +74,10 @@ while(cap1.isOpened() and cap2.isOpened()):
         cap1.release()
         cap2.release()
         break
-    f1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2YCrCb)
-    f2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2YCrCb)
+    f1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
+    f2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
+    ir, _, __ = rgb2ihs(f1)
+    vi, v1, v2 = rgb2ihs(f2)
     ir, vi = preprocessing(f1, f2)
     g_input = np.concatenate([ir, vi], axis=-1) 
     result = generator(g_input)

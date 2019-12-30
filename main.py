@@ -10,9 +10,9 @@ ir_images_dir = 'Train_ir/'
 vi_images_dir = 'Train_vi/'
 image_size = 132
 label_size = 120
-batch_size = 32
+batch_size = 16
 stride = 14
-eps = 10.0
+eps = 5.0
 lda = 100.0
 epoch = 10
 lr = 1e-4
@@ -61,7 +61,7 @@ if gpus:
     try:
         tf.config.experimental.set_virtual_device_configuration(
             gpus[0],
-            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3000)])
         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
         print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
     except RuntimeError as e:
@@ -69,8 +69,8 @@ if gpus:
         print(e)
 
 
-train_data_ir, train_label_ir = get_images(ir_images_dir, image_size, label_size, stride)
-train_data_vi, train_label_vi = get_images(vi_images_dir, image_size, label_size, stride)
+train_data_ir, train_label_ir = get_images2(ir_images_dir, image_size, label_size, stride)
+train_data_vi, train_label_vi = get_images2(vi_images_dir, image_size, label_size, stride)
 
 print(train_data_ir.shape)
 print(train_data_vi.shape)
@@ -99,5 +99,5 @@ for i in range(previos + 1, previos + 1 + epoch):
         if counter % 10 == 0:
             print("Epoch: [%2d], step: [%2d], time: [%4.4f], loss_d: [%.8f],loss_g:[%.8f]" \
             % ((i), counter, time.time()-start_time, d_loss, g_loss))        
-    generator.save_weights('./save-eps5/generator/my_checkpoint{}'.format(i))
-    discriminator.save_weights('./save-eps10/discriminator/my_checkpoint{}'.format(i))
+    generator.save_weights('./save-ihs/generator/my_checkpoint{}'.format(i))
+    discriminator.save_weights('./save-ihs/discriminator/my_checkpoint{}'.format(i))
